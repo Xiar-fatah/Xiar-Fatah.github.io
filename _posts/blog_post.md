@@ -1,12 +1,3 @@
----
-title:  How to Replicate Bloomberg's Interest Rates Curves with Quantlib
-author: Kiar Fatah
-layout: blog
-createdAt: June 18th 2023
-description: "How to Replicate Bloomberg's Interest Rates Curves"
-tags: [Bootstrapping, Interest Rates Curves, Quantlib, Deposit, Swaps]
-toc: true
----
 ## Introduction
 <p style="text-align: justify"> 
 The process of calculating a yield curve has many names in the finance industry. it can be called finding the redemption curve, constructing the term structure of interest rates, stripping and so on. In this blog post we will go through the process of constructing the yield curve for the Bloomberg SEK (vs. 6M STIBOR), also known as 348, with the help of the Python package QuantLib.
