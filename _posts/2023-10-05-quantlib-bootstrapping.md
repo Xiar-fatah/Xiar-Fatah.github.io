@@ -16,7 +16,7 @@ As shown in Figure 1, the SEK (vs. 6M STIBOR) is a swap curve based on the 6 mon
 The purpose of the SEK (vs. 6M STIBOR) is to forecast the interest rate for the 6M STIBOR. This means that whatever point we select on the curve is what the market will assume the 6M STIBOR will be in that amount of time. As a result this will forecast the floating leg of a swap.
 </p>
 
-![image alt text](media/quotes.png)
+![image alt text](img/2023-10-05-quantlib-bootstrapping/quotes.png)
 |:--:| 
 | Figure 1: Quotes for SEK (vs. 6M STIBOR) from Curve Construction in the Bloomberg Terminal. |
 
@@ -174,11 +174,11 @@ Note that you also have the option to change the calendar and the day count for 
 The zero rates obtained from Bloomberg are displayed in Figure 2. MEanwhile, the resulting curve generated from QuantLib is shown in Figure 3. To facilitate the comparison of the curves, a table is created to calculate the difference between the results, as presented in Table 1. It is important to note that the basis point difference can be disregarded, as the result from Bloomberg is rounded. Therefore, any extra digits in the basis point difference are solely from the QuantLib approximation. If we were to round them up, they would result in zeros.
 </p>
 
-![image alt text](media/curve.png)
+![image alt text](img/2023-10-05-quantlib-bootstrapping/curve.png)
 |:--:| 
 | Figure 2: The Bloomberg curve SEK (vs. 6M STIBOR) from Curve Construction in the Bloomberg Terminal. |
 
-![image alt text](media/quantlib_res.png)
+![image alt text](img/2023-10-05-quantlib-bootstrapping/quantlib_res.png)
 |:--:| 
 | Figure 3: The resulting curve from QuantLib using quotes from Bloomberg. |
 
