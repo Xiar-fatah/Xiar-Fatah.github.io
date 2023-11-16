@@ -28,7 +28,7 @@ import quantlib as ql
 from datetime import datetime, date, timedelta
 
 # Set the valuation date
-ql_date = ql.Date("2023-01-11", "%Y-%m-%d") 
+ql_date = ql.Date("2023-01-11", "%Y-%m-%d")
 ql.Settings.instance().evaluationDate = ql_date
 {% endhighlight %}
 
@@ -53,7 +53,7 @@ Since the first instrument in curve is the 6M STIBOR, it will be the first instr
 store_helpers = []
 
 # Define all the properties of the instrument
-stibor_rate = 3.21800 
+stibor_rate = 3.21800
 stibor_maturity= '6M'
 stibor_calendar = ql.TARGET()
 stibor_fixing_day = 0
@@ -61,17 +61,18 @@ stibor_convention = ql.ModifiedFollowing
 stibor_day_counter= ql.Actual360()
 
 # Create the DepositRateHelper
-stibor_helper = ql.DepositRateHelper(ql.QuoteHandle(ql.SimpleQuote(stibor_rate/100.0)), 
-                    ql.Period(stibor_maturity), 
+stibor_helper = ql.DepositRateHelper(ql.QuoteHandle(ql.SimpleQuote(stibor_rate/100.0)),
+                    ql.Period(stibor_maturity),
                     stibor_fixing_day,
-                    stibor_calendar, 
+                    stibor_calendar,
                     stibor_convention,
-                    stibor_day_counter) 
+                    False, # EOM convention
+                    stibor_day_counter)
 # Store the DepositRateHelper to the list of helpers
 store_helpers.append(stibor_helper)
 {% endhighlight %}
 
-### store_helpers
+In this next step we will create the underlying index of which the floating leg will follow:
 
 {% highlight python %}
 # The underlying floating rate
@@ -92,12 +93,12 @@ Moreover, the swap rates in Figure 1 are given as ask and bid. The bootstrap pro
 {% highlight python %}
 # Calculate the mid quotes
 bid_list= [3.51270, 3.45697, 3.29768, 3.18463,
- 3.10489, 3.06276, 3.03423, 3.00924, 
- 2.99359, 2.97369, 2.94015, 2.87215, 
+ 3.10489, 3.06276, 3.03423, 3.00924,
+ 2.99359, 2.97369, 2.94015, 2.87215,
  2.76782, 2.54788]
 ask_list = [3.53271, 3.48944, 3.33052, 3.21477,
- 3.13611, 3.09204, 3.06377, 3.03876, 
- 3.01821, 3.00251, 2.96605, 2.90305, 
+ 3.13611, 3.09204, 3.06377, 3.03876,
+ 3.01821, 3.00251, 2.96605, 2.90305,
  2.79838, 2.57832]
 mid = [(bid + ask)/2 for bid, ask in zip(bid_list,ask_list)]
 {% endhighlight %}
@@ -107,22 +108,23 @@ Then continuing with SwapRateHelper:
 </p>
 
 {% highlight python %}
-fixedFrequency = ql.Annual
-fixedConvention = ql.ModifiedFollowing
-fixedDayCount = ql.Thirty360(ql.Thirty360.BondBasis)
+fixedFrequency = ql.Annual                           # Frequency of the fixed leg
+fixedConvention = ql.ModifiedFollowing               # Fixed leg convention
+fixedDayCount = ql.Thirty360(ql.Thirty360.BondBasis) # Daycount convention of the fixed leg
 calendar = ql.TARGET()
 
-tenor =['1Y', '2Y', '3Y', '4Y', 
-        '5Y', '6Y', '7Y', '8Y', 
+tenor =['1Y', '2Y', '3Y', '4Y',
+        '5Y', '6Y', '7Y', '8Y',
         '9Y', '10Y', '12Y','15Y',
         '20Y', '30Y']
 iborIndex = index
 for r,m in zip(mid, tenor):
     rate = ql.QuoteHandle(ql.SimpleQuote(r/100.0))
     tenor = ql.Period(m)
-    swap_helper = ql.SwapRateHelper(rate, tenor, calendar,
-     fixedFrequency, fixedConvention, fixedDayCount, stibor_6m)
-    
+    swap_helper = swap_helper = ql.SwapRateHelper(
+    rate, tenor, calendar, fixedFrequency, fixedConvention, fixedDayCount, stibor_6m
+    )
+
     # Append each swap to our store_helpers
     store_helpers.append(swap_helper)
 {% endhighlight %}
